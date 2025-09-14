@@ -9,10 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for token on initial load
     if (token) {
-      // You can add a '/api/auth/me' endpoint to verify the token and get user data
-      // For now, we'll assume the token is valid if it exists
       setLoading(false);
     } else {
       setLoading(false);
