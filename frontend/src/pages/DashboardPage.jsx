@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { getPdfs, uploadPdf, deletePdf } from '../api/pdfs';
+import { getPdfs, uploadPdf, deletePdf, renamePdf } from '../api/pdfs';
 
 export default function DashboardPage() {
   const [pdfs, setPdfs] = useState([]);
@@ -9,6 +9,9 @@ export default function DashboardPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const fileInputRef = useRef(null);
+
+  const [editingPdfUuid, setEditingPdfUuid] = useState(null);
+  const [newName, setNewName] = useState('');
 
   const fetchPdfs = async () => {
     try {
@@ -37,12 +40,17 @@ export default function DashboardPage() {
       return;
     }
     try {
+      setLoading(true);
       await uploadPdf(file);
       setFile(null);
-      fileInputRef.current.value = null; 
-      fetchPdfs(); 
+      if (fileInputRef.current) {
+        fileInputRef.current.value = null;
+      }
+      await fetchPdfs();
     } catch (err) {
       setError('Failed to upload PDF.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -57,6 +65,32 @@ export default function DashboardPage() {
     }
   };
 
+  const handleRenameClick = (pdf) => {
+    setEditingPdfUuid(pdf.uuid);
+    setNewName(pdf.originalFilename);
+  };
+
+  const handleCancelRename = () => {
+    setEditingPdfUuid(null);
+    setNewName('');
+  };
+
+  const handleSaveRename = async (uuid) => {
+    if (!newName.trim()) {
+      setError('Filename cannot be empty.');
+      return;
+    }
+    try {
+      await renamePdf(uuid, newName.trim());
+      setPdfs(pdfs.map(pdf => 
+        pdf.uuid === uuid ? { ...pdf, originalFilename: newName.trim() } : pdf
+      ));
+      handleCancelRename(); 
+    } catch (err) {
+      setError('Failed to rename PDF.');
+    }
+  };
+  
   return (
     <div>
       <Navbar />
@@ -90,21 +124,48 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {pdfs.map((pdf) => (
                 <div key={pdf.uuid} className="bg-white rounded-lg shadow p-4 flex flex-col justify-between">
-                  <p className="font-semibold text-gray-800 truncate mb-4">{pdf.originalFilename}</p>
-                  <div className="flex items-center justify-between">
-                    <Link
-                      to={`/viewer/${pdf.uuid}`}
-                      className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600"
-                    >
-                      Open
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(pdf.uuid)}
-                      className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
-                    >
-                      Delete
-                    </button>
-                  </div>
+                  {editingPdfUuid === pdf.uuid ? (
+                    <div className="mb-4">
+                      <input
+                        type="text"
+                        value={newName}
+                        onChange={(e) => setNewName(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSaveRename(pdf.uuid)}
+                        className="w-full p-1 border border-indigo-300 rounded"
+                        autoFocus
+                      />
+                    </div>
+                  ) : (
+                    <p className="font-semibold text-gray-800 truncate mb-4">{pdf.originalFilename}</p>
+                  )}
+                  {editingPdfUuid === pdf.uuid ? (
+                    <div className="flex items-center justify-between">
+                      <button onClick={() => handleSaveRename(pdf.uuid)} className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600">
+                        Save
+                      </button>
+                      <button onClick={handleCancelRename} className="px-3 py-1 bg-gray-400 text-white text-sm rounded hover:bg-gray-500">
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <Link
+                        to={`/viewer/${pdf.uuid}`}
+                        className="px-3 py-1 bg-indigo-500 text-white text-sm rounded hover:bg-indigo-600"
+                      >
+                        Open
+                      </Link>
+                      <div className='flex items-center space-x-2'>
+                        <button onClick={() => handleRenameClick(pdf)} className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
+                          Rename
+                        </button>
+                        <button onClick={() => handleDelete(pdf.uuid)} className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600">
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  )}
+               
                 </div>
               ))}
             </div>
