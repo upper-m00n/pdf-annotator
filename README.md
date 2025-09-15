@@ -105,19 +105,14 @@ You need to create `.env` files for both the frontend and backend. It's recommen
 Create a file named `.env` in the `/backend` directory and add the following content:
 
 ```env
-# The port for the Express server to run on
 PORT=5000
 
-# Your MongoDB connection string
 MONGO_URI="mongodb://127.0.0.1:27017/insightfulpdf"
 
-# A long, random, and secret string for signing JWTs
-JWT_SECRET="YOUR_REALLY_STRONG_AND_SECRET_KEY"
+JWT_SECRET="YOUR_SECRET_KEY"
 
-# (Optional) API Key for the NLP service used for summarization
 NLP_API_KEY="YOUR_EXTERNAL_NLP_SERVICE_API_KEY"
 
-# The URL of your frontend client for CORS configuration
 CLIENT_URL="http://localhost:3000"
 ```
 
@@ -130,7 +125,7 @@ Create a file named `.env` in the `/frontend` directory and add the following co
 # The base URL of your backend API server
 REACT_APP_API_BASE_URL="http://localhost:5000"
 
-# --- OR ---
+# OR 
 
 # For Vite:
 # The base URL of your backend API server
