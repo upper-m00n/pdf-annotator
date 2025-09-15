@@ -3,12 +3,9 @@ import { useParams, Link } from 'react-router-dom';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { getHighlights, createHighlight } from '../api/highlights';
 
-// CSS imports for react-pdf layout
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
-// Point the worker to the file we placed in the public folder.
-// This is the most reliable method and avoids module resolution issues.
 pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
 
 export default function ViewerPage() {

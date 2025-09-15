@@ -39,8 +39,8 @@ export default function DashboardPage() {
     try {
       await uploadPdf(file);
       setFile(null);
-      fileInputRef.current.value = null; // Reset file input
-      fetchPdfs(); // Refresh the list
+      fileInputRef.current.value = null; 
+      fetchPdfs(); 
     } catch (err) {
       setError('Failed to upload PDF.');
     }
