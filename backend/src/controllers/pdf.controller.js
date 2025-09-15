@@ -4,7 +4,6 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 
-
 exports.uploadPdf = async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: 'Please upload a file' });
@@ -86,6 +85,21 @@ exports.renamePdf = async (req, res) => {
         }
 
         res.json({ message: 'PDF renamed successfully', pdf });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
+exports.getPdfFile = async (req, res) => {
+    try {
+        const pdf = await PDF.findOne({ uuid: req.params.uuid, userId: req.user.id });
+        if (!pdf) {
+            return res.status(404).json({ message: 'PDF not found' });
+        }
+        
+        const filePath = path.resolve(pdf.filePath);
+        res.sendFile(filePath);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
