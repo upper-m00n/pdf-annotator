@@ -22,6 +22,9 @@ const PdfSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  fullText: { type: String, default: '' },
+  summary: { type: String, default: '' },
+  keyPhrases: [{ type: String }],
 }, { timestamps: true });
 
 

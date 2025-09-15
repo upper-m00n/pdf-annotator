@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createHighlight, getHighlights } = require('../controllers/highlight.controller');
+const { createHighlight, getHighlights,updateHighlightNote } = require('../controllers/highlight.controller');
 const { protect } = require('../middleware/auth.middleware');
 
 router.post('/:pdfUuid', protect, createHighlight);

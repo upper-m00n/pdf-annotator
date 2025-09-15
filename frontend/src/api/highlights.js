@@ -18,3 +18,8 @@ export const getHighlights = async (pdfUuid) => {
   const response = await api.get(`/highlights/${pdfUuid}`);
   return response.data;
 };
+
+export const updateHighlightNote = async (highlightId, note) => {
+  const response = await api.put(`/highlights/${highlightId}`, { note });
+  return response.data;
+};

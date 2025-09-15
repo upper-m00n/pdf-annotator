@@ -3,33 +3,42 @@ const Highlight = require('../models/highlight.model');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
+const pdf = require('pdf-parse');
 
 
 // upload new pdf
 exports.uploadPdf = async (req, res) => {
+ 
   if (!req.file) {
-    return res.status(400).json({ message: 'Please upload a file' });
+    return res.status(400).json({ message: 'Please upload a PDF file.' });
   }
 
   try {
+    
+    const dataBuffer = fs.readFileSync(req.file.path);
+    
+    const pdfData = await pdf(dataBuffer);
+
     const newPdf = new PDF({
-      uuid: uuidv4(), 
+      uuid: uuidv4(),
       originalFilename: req.file.originalname,
       filePath: req.file.path,
-      userId: req.user.id, 
+      userId: req.user.id,
+      fullText: pdfData.text,
     });
 
-    const savedPdf = await newPdf.save(); 
+    const savedPdf = await newPdf.save();
 
     res.status(201).json({
-      message: 'File uploaded successfully',
+      message: 'File uploaded and text extracted successfully',
       pdf: {
         uuid: savedPdf.uuid,
         originalFilename: savedPdf.originalFilename,
       },
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server Error', error: error.message });
+    console.error('Error during PDF upload and processing:', error);
+    res.status(500).json({ message: 'Server error while processing PDF.', error: error.message });
   }
 };
 
@@ -92,7 +101,7 @@ exports.renamePdf = async (req, res) => {
     }
 };
 
-// get existing 
+// get existing
 exports.getPdfFile = async (req, res) => {
     try {
         const pdf = await PDF.findOne({ uuid: req.params.uuid, userId: req.user.id });

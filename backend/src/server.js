@@ -22,6 +22,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/pdfs', pdfRoutes);
 app.use('/api/highlights', highlightRoutes);
+app.use('/api/nlp', require('./routes/nlp.routes'));
 
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
