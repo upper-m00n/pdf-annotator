@@ -1,23 +1,40 @@
 const mongoose = require('mongoose');
 
 const HighlightSchema = new mongoose.Schema({
-  pdfId: { type: String, required: true }, 
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  pageNumber: { type: Number, required: true }, 
-  position: { 
-    x1: Number, y1: Number,
-    x2: Number, y2: Number,
-    width: Number, height: Number,
+  pdfId: { 
+    type: String, 
+    required: true 
   },
-  content: { 
+  userId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User', 
+    required: true 
+  },
+  pageNumber: { 
+    type: Number, 
+    required: true 
+  },
+  type: {
+    type: String,
+    enum: ['text', 'drawing'],
+    required: true,
+  },
+  position: {
+    x1: Number,
+    y1: Number,
+    width: Number,
+    height: Number,
+  },
+  content: {
     text: String,
-    image: String, 
+  },
+  drawingData: {
+    type: String,
   },
   note: {
     type: String,
-    default: '', 
+    default: '',
   },
-  timestamp: { type: Date, default: Date.now }, 
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('Highlight', HighlightSchema);
