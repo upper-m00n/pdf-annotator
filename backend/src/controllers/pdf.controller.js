@@ -4,6 +4,8 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 
+
+// upload new pdf
 exports.uploadPdf = async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: 'Please upload a file' });
@@ -31,7 +33,7 @@ exports.uploadPdf = async (req, res) => {
   }
 };
 
-
+// get pdf
 exports.getUserPdfs = async (req, res) => {
   try {
     const pdfs = await PDF.find({ userId: req.user.id }).select('uuid originalFilename createdAt');
@@ -41,7 +43,7 @@ exports.getUserPdfs = async (req, res) => {
   }
 };
 
-
+// delete
 exports.deletePdf = async (req, res) => {
   try {
     const pdf = await PDF.findOne({ uuid: req.params.uuid, userId: req.user.id });
@@ -66,7 +68,7 @@ exports.deletePdf = async (req, res) => {
   }
 };
 
-
+// rename
 exports.renamePdf = async (req, res) => {
     try {
         const { newName } = req.body;
@@ -90,7 +92,7 @@ exports.renamePdf = async (req, res) => {
     }
 };
 
-
+// get existing 
 exports.getPdfFile = async (req, res) => {
     try {
         const pdf = await PDF.findOne({ uuid: req.params.uuid, userId: req.user.id });

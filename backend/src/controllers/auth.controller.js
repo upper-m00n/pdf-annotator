@@ -8,7 +8,7 @@ const generateToken = (id) => {
   });
 };
 
-
+// signup
 exports.signup = async (req, res) => {
   const { email, password } = req.body;
 
@@ -42,7 +42,7 @@ exports.signup = async (req, res) => {
   }
 };
 
-
+// login
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 

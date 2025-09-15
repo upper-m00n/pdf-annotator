@@ -1,6 +1,7 @@
 const Highlight = require('../models/highlight.model');
 const PDF = require('../models/pdf.model');
 
+// create new highlight
 exports.createHighlight = async (req, res) => {
   const { pdfUuid } = req.params;
   const { content, position, pageNumber } = req.body;
@@ -27,6 +28,7 @@ exports.createHighlight = async (req, res) => {
   }
 };
 
+// get highlights
 exports.getHighlights = async (req, res) => {
   const { pdfUuid } = req.params;
 
