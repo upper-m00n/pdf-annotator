@@ -23,5 +23,6 @@ router.get('/', protect, getUserPdfs);
 router.put('/:uuid', protect, renamePdf);
 router.delete('/:uuid', protect, deletePdf);
 router.get('/:uuid/file', protect, getPdfFile);
+router.put('/:uuid',protect,renamePdf)
 
 module.exports = router;
