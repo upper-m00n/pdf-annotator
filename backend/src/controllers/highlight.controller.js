@@ -49,3 +49,24 @@ exports.getHighlights = async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 };
+
+// custom note 
+exports.updateHighlightNote = async (req, res) => {
+  const { highlightId } = req.params;
+  const { note } = req.body;
+
+  try {
+    const highlight = await Highlight.findOne({ _id: highlightId, userId: req.user.id });
+
+    if (!highlight) {
+      return res.status(404).json({ message: 'Highlight not found or access denied' });
+    }
+
+    highlight.note = note;
+    const updatedHighlight = await highlight.save();
+    
+    res.json(updatedHighlight);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+};

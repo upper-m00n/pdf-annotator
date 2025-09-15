@@ -13,6 +13,10 @@ const HighlightSchema = new mongoose.Schema({
     text: String,
     image: String, 
   },
+  note: {
+    type: String,
+    default: '', 
+  },
   timestamp: { type: Date, default: Date.now }, 
 });
 
