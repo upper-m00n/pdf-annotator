@@ -9,17 +9,14 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-100">
       <Routes>
-        {/* Public Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
 
-        {/* Private Routes */}
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/viewer/:pdfId" element={<ViewerPage />} />
         </Route>
         
-        {/* Redirect root to dashboard if logged in, else to login */}
         <Route path="*" element={<LoginPage />} />
 
       </Routes>
